@@ -27,7 +27,7 @@ public class BoardAddAction implements Action{
         
         boolean result=false; 
          
-        MultipartRequest multi; //?ŒŒ?¼ ?—…ë¡œë“œë¥? ?œ„?•´?„œ ?„ ?–¸
+        MultipartRequest multi; 
         try { 
             multi = new MultipartRequest(request, realFolder, fileSize, "euc-kr", new DefaultFileRenamePolicy()); 
             boarddata.setBOARD_NAME(multi.getParameter("BOARD_NAME")); 
@@ -37,10 +37,10 @@ public class BoardAddAction implements Action{
             result=boarddao.boardInsert(boarddata); 
              
             if(result==false){ 
-                //System.out.println("ê²Œì‹œ?Œ ?“±ë¡? ?‹¤?Œ¨"); 
+                System.out.println("°Ô½ÃÆÇ µî·Ï ½ÇÆĞ"); 
                 return null; 
             } 
-           // System.out.println("ê²Œì‹œ?Œ ?“±ë¡? ?™„ë£?");             
+            System.out.println("°Ô½ÃÆÇ µî·Ï ¼º°ø?");             
             forward.setRedirect(true); 
             forward.setPath("./BoardList.bo"); 
             return forward; 

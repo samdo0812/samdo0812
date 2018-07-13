@@ -9,7 +9,6 @@
 %> 
 <html>
 <head>
-<head>
 	<meta name="viewport" content="width=device-width" , initial-scale='1'>	<!-- 기기에 따라 화면 크기 -->
 	<title>3조 조미정</title>
 	<link rel="stylesheet" href="./Resources/css/bootstrap.css">	<!-- 외부적으로 만들어진 css 디자인 참조(부트 스트랩) -->
@@ -97,7 +96,7 @@
 	<!-- 게시판 등록 --> 
 <div class="container">
 <form  name="boardform" action="./BoardAddAction.bo" method="post" enctype="multipart/form-data"> 
-<input type="hidden" name="BOARD_ID" value="<%=username %>"> 
+<input type="hidden" name="BOARD_NAME" value="<%=username %>"> 
 <table class="table table-bordered"> 
     <tr align="center" valign="middle"> 
         <td colspan="5"> 제작 과정</td> 
@@ -161,7 +160,7 @@
 			<div class="col-sm-2"><h4 style="text-align: center; color:white;">네비게이션</h4>
 				<div class="list=group">
 					<a href="./main.dron" class="list-group-item">메인 가기</a>
-					<a href="#" class="list-group-item">제작 과정</a>
+					<a href="./BoardList.bo" class="list-group-item">제작 과정</a>
 					<a href="./MemberIntro.dron#kim" class="list-group-item">조원 소개</a>
 				</div>
 			</div>
@@ -183,6 +182,3 @@
 </body>
 </html>
 
-	
-</body>
-</html>

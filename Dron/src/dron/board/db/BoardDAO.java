@@ -142,6 +142,116 @@ public class BoardDAO {
         } 
         return false; 
     } 
-   
+  
+    //글 내용 보기 //글 레코드 번호를 인수로 받아온다. 
+    public BoardBean getDetail(int num) throws Exception{ 
+        BoardBean board = null; 
+        try{ 
+            pstmt = con.prepareStatement( 
+                    "select * from board where BOARD_NUM = ?"); 
+            pstmt.setInt(1, num); 
+             
+            rs= pstmt.executeQuery(); 
+             
+            if(rs.next()){ 
+                board = new BoardBean(); 
+                board.setBOARD_NUM(rs.getInt("BOARD_NUM")); 
+                board.setBOARD_NAME(rs.getString("BOARD_NAME")); 
+                board.setBOARD_SUBJECT(rs.getString("BOARD_SUBJECT")); 
+                board.setBOARD_CONTENT(rs.getString("BOARD_CONTENT")); 
+                board.setBOARD_FILE(rs.getString("BOARD_FILE")); 
+                board.setBOARD_RE_REF(rs.getInt("BOARD_RE_REF")); 
+                board.setBOARD_RE_LEV(rs.getInt("BOARD_RE_LEV")); 
+                board.setBOARD_RE_SEQ(rs.getInt("BOARD_RE_SEQ")); 
+                board.setBOARD_READCOUNT(rs.getInt("BOARD_READCOUNT")); 
+                board.setBOARD_DATE(rs.getDate("BOARD_DATE")); 
+            } 
+            return board; 
+        }catch(Exception ex){ 
+            System.out.println("getDetail 에러 : " + ex); 
+        }finally{ 
+            if(rs!=null)try{rs.close();}catch(SQLException ex){} 
+            if(pstmt !=null)try{pstmt.close();}catch(SQLException ex){} 
+        } 
+        return null; 
+    } 
+    
+  //조회수 업데이트(글 내용을 확인하는 순간 호출된다) 
+    public void setReadCountUpdate(int num) throws Exception{ 
+        String sql="update board set BOARD_READCOUNT = "+ 
+            "BOARD_READCOUNT+1 where BOARD_NUM = "+num; 
+         
+        try{ 
+            pstmt=con.prepareStatement(sql); 
+            pstmt.executeUpdate(); 
+        }catch(SQLException ex){ 
+            System.out.println("setReadCountUpdate 에러 : "+ex); 
+        } 
+    } 
+    
+  //글 수정. 
+    public boolean boardModify(BoardBean modifyboard) throws Exception{ 
+        String sql="update board set BOARD_SUBJECT=?,"; 
+        sql+="BOARD_CONTENT=? where BOARD_NUM=?"; 
+         
+        try{ 
+            pstmt = con.prepareStatement(sql); 
+            pstmt.setString(1, modifyboard.getBOARD_SUBJECT()); 
+            pstmt.setString(2, modifyboard.getBOARD_CONTENT()); 
+            pstmt.setInt(3, modifyboard.getBOARD_NUM()); 
+            pstmt.executeUpdate(); 
+            return true; 
+        }catch(Exception ex){ 
+            System.out.println("boardModify 에러 : " + ex); 
+        }finally{ 
+            if(rs!=null)try{rs.close();}catch(SQLException ex){} 
+            if(pstmt!=null)try{pstmt.close();}catch(SQLException ex){} 
+            } 
+        return false; 
+    } 
+    
+  //글쓴이인지 확인(글쓴이를 확인할 글의 정보를 얻는다.) 
+    public boolean isBoardWriter(int num,String id){ 
+        String board_sql="select * from board where BOARD_NUM=?"; 
+         
+        try{ 
+            pstmt=con.prepareStatement(board_sql); 
+            pstmt.setInt(1, num); 
+            rs=pstmt.executeQuery(); 
+            rs.next(); 
+             
+            if(id.equals(rs.getString("BOARD_NAME"))){ 
+                return true; 
+            } 
+        }catch(SQLException ex){ 
+            System.out.println("isBoardWriter 에러 : "+ex); 
+        } 
+        return false; 
+    }
+    
+ // 글 삭제(액션 클래스에서 비밀번호 일치 여부 확인후 이 메서드를 수행한다.) 
+    public boolean boardDelete(int num){ 
+        String board_delete_sql="delete from board where BOARD_num=?"; 
+         
+        int result=0; 
+         
+        try{ 
+            pstmt=con.prepareStatement(board_delete_sql); 
+            pstmt.setInt(1, num); 
+            result=pstmt.executeUpdate(); 
+            if(result==0)return false; 
+             
+            return true; 
+        }catch(Exception ex){ 
+            System.out.println("boardDelete 에러 : "+ex); 
+        }finally{ 
+            try{ 
+                if(pstmt!=null)pstmt.close(); 
+            }catch(Exception ex) {} 
+        } 
+         
+        return false; 
+    } 
+     
 } 
 

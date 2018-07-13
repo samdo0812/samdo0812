@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import dron.commons.action.Action; 
 import dron.commons.action.ActionForward;
+import dron.board.action.BoardDeleteAction;
+import dron.board.action.BoardModifyAction;
+import dron.board.action.BoardDetailAction;
 import dron.board.action.BoardAddAction;
 import dron.board.action.BoardListAction; 
 
@@ -51,7 +54,48 @@ public class BoardFrontController extends HttpServlet implements Servlet{
                 e.printStackTrace(); 
             }             
         }
-
+		/*글 보기*/
+		else if(command.equals("/BoardDetailAction.bo")){ 
+            action = new BoardDetailAction();  
+            try{ 
+                forward = action.execute(request,  response); 
+            }catch(Exception e){ 
+                e.printStackTrace(); 
+            }             
+        } 
+		/*글 수정*/
+		else if(command.equals("/BoardModify.bo")){ 
+            action = new BoardModifyFormAction(); 
+            try{ 
+                forward = action.execute(request,  response); 
+            }catch(Exception e){ 
+                e.printStackTrace(); 
+            }      
+	}
+		/*글 수정 할 때*/
+		else if(command.equals("/BoardModifyAction.bo")){ 
+            action = new BoardModifyAction(); 
+            try{ 
+                forward = action.execute(request,  response); 
+            }catch(Exception e){ 
+                e.printStackTrace(); 
+            }             
+		}
+		
+		/*삭제*/
+		
+		else if(command.equals("/BoardDelete.bo")){ 
+            action = new BoardDeleteAction(); 
+            try{ 
+                forward = action.execute(request,  response); 
+            }catch(Exception e){ 
+                e.printStackTrace(); 
+            }
+		}
+		
+		
+		
+		
 			/*-----------------------------------커멘드---------------------------------------------------*/
 
 			/*전송방식*/

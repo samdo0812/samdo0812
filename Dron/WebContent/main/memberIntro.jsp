@@ -16,9 +16,15 @@ if(session.getAttribute("username")!=null){
 	<link rel="stylesheet" href="./Resources/css/dronStcss.css">  <!-- 외부적으로 dronStcss 다자인 참조(내가 만든거) -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="./Resources/js/bootstrap.js"></script>
-	
 	<script>
-	
+		function btn() {
+			<%if(session.getAttribute("username") == null) { %>
+			alert('로그인 해주세요');
+			location.href="./MemberLogin.dron";
+		<% } else { %>
+			location.href="./BoardList.bo";
+		<% } %>
+		}
 	</script>
 </head>
 <body>
@@ -47,7 +53,7 @@ if(session.getAttribute("username")!=null){
 			<div class="collapsed navbar-collapse" id="bs-example-navbar-collapse-1" >
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="../main/main.jsp">소개<span class="sr-only"></span></a></li>
-					<li><a href="#">제작 과정</a></li>
+					<li><a href="javascript:void(0);" onclick="btn();">제작 과정</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">조원 소개<span class="caret"></span></a>
 						<ul class="dropdown-menu">
@@ -224,8 +230,8 @@ if(session.getAttribute("username")!=null){
 			<div class="col-sm-2"><h4 style="text-align: center; color:white;">네비게이션</h4>
 				<div class="list=group">
 					<a href="./main.dron" class="list-group-item">메인 가기</a>
-					<a href="#" class="list-group-item">제작 과정</a>
-					<a href="../main/memberIntro.jsp" class="list-group-item">조원 소개</a>
+					<a href="javascript:void(0);" onclick="btn();" class="list-group-item">제작 과정</a>
+					<a href="./MemberIntro.dron#kim" class="list-group-item">조원 소개</a>
 				</div>
 			</div>
 			<div class="col-sm-3"><h4 style="text-align: center; color:white;">Blog</h4>

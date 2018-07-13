@@ -1,24 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="sun.java2d.loops.Blit"%> 
-<%@page import="java.util.List"%> 
 <%@page import="dron.board.db.BoardBean"%> 
-<% 
-String username=null; 
-if(session.getAttribute("username")!=null){ 
-	username=(String)session.getAttribute("username"); 
-} 
-
-
-List boardList =(List)request.getAttribute("boardlist"); 
-int listcount=((Integer)request.getAttribute("listcount")).intValue(); 
-int nowpage=((Integer)request.getAttribute("page")).intValue(); 
-int maxpage=((Integer)request.getAttribute("maxpage")).intValue(); //최대 페이지수
-int startpage=((Integer)request.getAttribute("startpage")).intValue(); //현재 페이지에 표시할 첫 페이지 수
-int endpage=((Integer)request.getAttribute("endpage")).intValue(); //현제 페이지에 표시 할 끝 페이지 수
-
-%>
+<%@ page language="java" contentType="text/html; charset=EUC-KR" %> 
+<%BoardBean board = (BoardBean)request.getAttribute("boarddata"); %>
 
 <html>
 <head>
@@ -32,6 +17,7 @@ int endpage=((Integer)request.getAttribute("endpage")).intValue(); //현제 페이지
 </head>
 <body>
 
+	
 <style type="text/css">
 		.jumbotron{
 			background-image: url('./Resources/images/jumbotronBackGround.jpg');
@@ -57,9 +43,16 @@ int endpage=((Integer)request.getAttribute("endpage")).intValue(); //현제 페이지
 			<div class="collapsed navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="main.jsp">소개<span class="sr-only"></span></a></li>
-					<li><a href="./BoardList.bo">제작 과정</a></li>
+					
+					<%if(session.getAttribute("username")==null){ %>
+					<script>alert("로그인을 해주세요");</script>
+					<% response.sendRedirect("./login.dron"); %>
+					
+					<%} else {%>
+						<li><a href="./BoardList.bo">제작 과정</a></li>
+					<%} %>
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">조원 소개<span class="caret"></span></a>
+						<a href="memberIntro.jsp" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">조원 소개<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="./MemberIntro.dron#kim">김도훈</a></li>
 							<li><a href="./MemberIntro.dron#chu">추정범</a></li>
@@ -102,99 +95,73 @@ int endpage=((Integer)request.getAttribute("endpage")).intValue(); //현제 페이지
 		
 		</div>
 	</nav>
+	
+
+<!-- ---------------------------------------------------------------------------------------------------------- -->
+<body>
 
 
 
-
-<!-- ------------------------------------------------- -->
-<!-- 게시판 리스트 -->
-
-<div class="container"> 
-<table class="table table-striped"> 
+ <!-- 게시판 수정 --> 
+ <div class="container">
+ <table class="table table-bordered"> 
     <tr align="center" valign="middle"> 
-        <td colspan="4">제작 과정</td> 
-        <td align=right> <font size=2><span class="glyphicon glyphicon-pencil"></span>&nbsp;글 개수 : ${listcount}</font></td> 
-    </tr> 
-    <tr align="center" valign="middle" bordercolor="#333333"> 
-        <td style="font-family:Tahoma;font-size:8pt" width="8%" height="26"> 
-            <div align="center"> 번호</div> 
-        </td> 
-        <td style="font-family:Tahoma;font-size:8pt" width="50%"> 
-            <div align="center"> 제목</div> 
-        </td> 
-        <td style="font-family:Tahoma;font-size:8pt" width="14%"> 
-            <div align="center"> 작성자</div> 
-        </td> 
-        <td style="font-family:Tahoma;font-size:8pt" width="17%"> 
-            <div align="center"> 날짜</div> 
-        </td> 
-        <td style="font-family:Tahoma;font-size:8pt" width="11%"> 
-            <div align="center"> 조회수</div> 
-        </td>                 
-    </tr>     
-    <% 
-        for(int i=0 ; i<boardList.size() ; i++){ 
-            BoardBean bl=(BoardBean)boardList.get(i);                     
-    %> 
-    <tr align="center" valign="middle" bordercolor="#333333"  
-        onmouseover="this.style.backgroundColor='f8f8f8'" onmouseout="this.style.backgroundColor=''"> 
-        <td height="23" style="font-family:Tahoma;font-size:10pt"><%=bl.getBOARD_NUM() %></td> 
-        <td style="font-family:tahoma;font-size:10pt"> 
-            <div align="left"> 
-            <%if(bl.getBOARD_RE_LEV()!=0){ %> 
-                <%for(int a=0 ; a<=bl.getBOARD_RE_LEV()*2 ; a++){ %> 
-                    &nbsp; 
-                <%} %> 
-                    ▶ 
-            <%}else{ %> 
-                    
-            <%} %> 
-            <a href="./BoardDetailAction.bo?num=<%=bl.getBOARD_NUM() %>"> 
-                <%=bl.getBOARD_SUBJECT() %></a></div>                 
+        <td colspan="5">제작 과정</td> 
+    </tr>  
+    <tr> 
+        <td style="font-family:돋움;font-size:12" height="16"> 
+            <div align="center">제목 &nbsp;&nbsp;</div> 
         </td>         
-        <td style="font-family:Tahoma;font-size:10pt"> 
-            <div align="center"><%=username %></div> 
+        <td style="font-family:돋움; font-size:12">  
+            <%=board.getBOARD_SUBJECT() %>  
+        </td>         
+    </tr> 
+    <tr bgcolor="ccccc"> 
+        <td colspan="2" style="height:1px"></td> 
+    </tr> 
+    <tr> 
+        <td style="font-family:돋움 ; font-size:12"> 
+            <div align="center">내 용</div> 
         </td> 
-        <td style="font-family:Tahoma;font-size:10pt"> 
-            <div align="center"><%=bl.getBOARD_DATE() %></div> 
-        </td> 
-        <td style="font-family:Tahoma;font-size:10pt"> 
-            <div align="center"><%=bl.getBOARD_READCOUNT() %></div> 
+        <td style="font-family:돋움; font-size:12"> 
+            <table border=0 width=490 height=250 style="table-layout:fixed"> 
+                <tr> 
+                    <td valign=top style="font-family:돋움; font-size:12"> 
+                        <%=board.getBOARD_CONTENT() %> 
+                    </td> 
+                </tr> 
+            </table>     
         </td> 
     </tr> 
-    <%} %> 
-    <tr align=center height=20> 
-        <td colspan=7 style=font-family.Tahoma, font-size:10pt> 
-            <%if(nowpage<=1){ %>    [이전] &nbsp;         
-            <%}else{ %> 
-                <a href ="./BoardList.no?page=<%=nowpage-1%>">[이전]</a>&nbsp; 
-            <%} %> 
-             
-            <%for(int a=startpage ; a<=endpage ; a++){  
-                    if(a==nowpage){ %>  
-                        [<%=a %>]     
-               <%}else{ %> 
-                <a href="./BoardList.bo?page=<%=a %>">[<%=a%>]</a>&nbsp; 
+    <tr> 
+        <td style="font-family:돋움; font-size:12"> 
+            <div align="center">첨부파일</div> 
+        </td> 
+        <td style="font-family:돋움; font-size:12"> 
+            <%if(!(board.getBOARD_FILE()==null)){ %> 
+                <a href="./boardupload/<%=board.getBOARD_FILE() %>"> 
+                    <%=board.getBOARD_FILE() %> 
+                </a> 
                 <%} %> 
-             <%} %>  
-              
-             <%if(nowpage>=maxpage){ %> [다음] 
-            <%}else{ %> 
-                <a href ="./BoardList.bo?page=<%=nowpage+1%>">[다음]</a> 
-            <%} %>          
         </td> 
     </tr> 
-</table> 
-</div>
-<hr/>
-<div class="container">
-<tfooter>
-<a class="btn btn-default pull-right" href="./BoardWrite.bo">글쓰기</a>
-</tfooter>
-</div>
+    <tr bgcolor="cccccc"> <td colspan="2" style="height:1px;"></td> </tr> 
+    <tr> <td colspan="2">&nbsp;</td>    </tr> 
+    <tr align="center" valign="middle"> 
+        <td colspan="5"> 
+            <font size=2> 
+                <a href="./BoardReplyAction.bo?num=<%=board.getBOARD_NUM() %>">[답변]</a> 
+                <a href="./BoardModify.bo?num=<%=board.getBOARD_NUM() %>">[수정]</a>                 
+                <a href="./BoardDelete.bo?num=<%=board.getBOARD_NUM() %>">[삭제]</a> 
+                <a href="./BoardList.bo">[목록]</a>                 
+            </font> 
+        </td> 
+    </tr> 
+ </table> 
+ </div>
 <!-- ---------------------------------------------------------------------------------------------- -->
 
-<footer class="footer navbar-fixed-bottom" style="background-color: #000000;">
+<footer  style="background-color: #000000;">
 		<div class="container">
 		<br>
 		<div class="row"> <!-- row로 각각 공간을 나눔 -->
@@ -225,3 +192,4 @@ int endpage=((Integer)request.getAttribute("endpage")).intValue(); //현제 페이지
 	</footer>   
 </body>
 </html>
+
