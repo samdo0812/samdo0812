@@ -72,4 +72,6 @@ AND job = (SELECT job
 --6)'JONES'가 속해있는 부서의 모든사람의 사원번호, 이름, 입사일, 급여를 출력하라.
 SELECT empno, ename, hiredate, sal
 FROM emp
-WHERE deptno = (SELECT deptno from emp WHERE ename='JONES');
+WHERE deptno = (SELECT deptno 
+                FROM emp
+                WHERE ename='JONES');
