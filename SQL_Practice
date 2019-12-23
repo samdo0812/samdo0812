@@ -1,0 +1,75 @@
+Account - scott
+
+--1)EMP와 DEPT Table을 조인하여 부서번호, 부서명, 이름, 급여를 출력하라.
+--ANSI
+SELECT e.deptno, d.dname, e.ename, e.sal
+FROM emp e 
+INNER JOIN dept d
+ON e.deptno = d.deptno;
+
+--ORACLE
+SELECT e.deptno, d.dname, e.ename, e.sal
+FROM emp e, dept d
+WHERE e.deptno = d.deptno;
+
+--2)이름이 'ALLEN'인 사원의 부서명을 출력하라.
+--ANSI
+SELECT e.ename, d.dname
+FROM emp e
+INNER JOIN dept d 
+ON e.deptno = d.deptno
+WHERE e.ename = 'ALLEN';
+
+--ORACLE
+SELECT e.ename, d.dname
+FROM emp e, dept d
+WHERE e.deptno = d.deptno
+AND e.ename='ALLEN';
+
+--3)DEPT Table에 있는 모든 부서를 출력하고, EMP Table에 있는 DATA와 JOIN하여 모든 사원의 이름, 부서번호, 부서명, 급여를 출력하라.
+--ANSI
+SELECT e.ename, e.deptno, d.dname, e.sal
+FROM emp e
+RIGHT OUTER JOIN dept d
+ON e.deptno = d.deptno;
+
+--ORACLE
+SELECT e.ename, e.deptno, d.dname, e.sal
+FROM emp e, dept d
+WHERE e.deptno(+) = d.deptno;
+
+--4)EMP Table에 있는 EMPNO와 MGR을 이용하여 서로의 관계를 다음과 같이 출력하라.
+--SMITH의 매니저는 FORD이다.
+--ANSI
+SELECT e.ename || '의 매니저는' || m.ename || '이다.'
+FROM emp e
+JOIN emp m
+ON e.mgr = m.empno
+WHERE e.ename = 'SMITH';
+
+--ORACLE
+SELECT e.ename || '의 매니저는' || m.ename || '이다.'
+FROM emp e, emp m
+WHERE e.mgr = m.empno
+AND e.ename='SMITH';
+
+--5)'ALLEN'의 직무와 같은 사람의 이름, 부서명, 급여, 직무를 출력하라.
+--ANSI
+SELECT e.ename, d.dname, e.sal, e.job
+FROM emp e
+JOIN dept d
+ON e.deptno = d.deptno
+WHERE job = (SELECT job FROM emp WHERE ename ='ALLEN');
+
+--ORACLE
+SELECT e.ename, d.dname, e.sal, e.job
+FROM emp e, dept d
+WHERE e.deptno = d.deptno
+AND job = (SELECT job 
+           FROM emp 
+           WHERE ename ='ALLEN');
+
+--6)'JONES'가 속해있는 부서의 모든사람의 사원번호, 이름, 입사일, 급여를 출력하라.
+SELECT empno, ename, hiredate, sal
+FROM emp
+WHERE deptno = (SELECT deptno from emp WHERE ename='JONES');
