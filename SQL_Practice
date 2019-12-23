@@ -75,3 +75,20 @@ FROM emp
 WHERE deptno = (SELECT deptno 
                 FROM emp
                 WHERE ename='JONES');
+
+--7)전체 사원의 평균임금보다 많은 사원의 사원번호, 이름, 부서명, 입사일, 지역, 급여를출력하라.
+SELECT e.empno, e.ename, d.dname, e.hiredate, d.loc, e.sal
+FROM emp e, dept d
+WHERE e.deptno = d.deptno
+AND SAL > (SELECT AVG(SAL)
+           FROM emp);
+
+--8)10번 부서의 사람들중에서 20번 부서의 사원과 같은 업무를 하는 사원의 사원번호, 이름, 부서명, 입사일, 지역을 출력하라.
+SELECT e.empno, e.ename, d.dname, e.hiredate, d.loc
+FROM emp e, dept d
+WHERE e.deptno = d.deptno
+AND e.deptno = 10
+AND e.job
+IN (SELECT job
+    FROM emp
+    WHERE deptno=20);
