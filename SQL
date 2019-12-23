@@ -1,0 +1,65 @@
+EQUI JOIN (표준 INNER JOIN, NATURAL JOIN)
+NON-EQUI JOIN
+SELF JOIN
+OUTER JOIN
+
+
+
+EQUI JOIN 말 그대로 일치한 값으로 조인 시키는 경우
+-ORACLE
+SELECT *FROM emp, dept
+WHERE emp.deptno = dept.deptno;
+
+-ANSI
+SELECT *FROM emp
+INNER JOIN dept
+ON emp.deptno = dept.deptno;
+
+
+Non-EQUI JOIN 두 값을 비교하면서 조인
+SELECT ename, grade
+FROM emp, salgrade
+WHERE emp.sal >= salgrade.losal AND emp.sal <= salgrade.hisal;
+
+SELECT ename, grade
+FROM emp, salgrade
+WHERE emp.sal BETWEEN salgrade.losal AND salgrade.hisal;
+
+
+SELF JOIN
+-ORACLE
+SELECT employee.ename, manager.ename
+FROM emp employee, emp manager
+WHERE employee.deptno = manager.deptno;
+
+-ANSI
+select employee.ename, manager.ename
+from emp employee
+JOIN emp manager
+ON employee.deptno = manager.deptno;
+
+------------------------------------------------------------------------------------------------------------------------------------
+OUTER JOIN
+SELECT employee.ename, manager.ename
+FROM emp employee, emp manager
+WHERE employee.mgr = manager.empno;
+
+-ORACLE
+SELECT employee.ename, manager.ename                  사장은 mgr이 null값이다. 사원번호가 null인 사원은 없으므로 조인조건에 만족하지 못한다.
+FROM emp employee, emp manager                        따라서 조인 시킬 값이 없는 측에 (+)
+WHERE employee.mgr = manager.empno(+);                empno에 null이라는 값(번호)이 없으므로 manager.empno절이 조건에 만족못한다. 그래서(+)
+
+-ANSI SQL표준 (LEFT OUTER JOIN)                       왼쪽에 값이 더 있다. 라고 이해하자.
+SELECT employee.ename , manager.ename
+FROM emp employee LEFT OUTER JOIN emp manager
+ON employee.mgr = manager.empno;
+
+-ORACLE
+select employee.ename , manager.ename                 empno의 사원번호는 14개, mgr의 번호는 중복된 번호를 빼면 6개
+from emp employee, emp manager                        즉, manager.empno 만족하는 값이 없지만 employee.mgr출력하겠다.
+where employee.mgr(+) = manager.empno;                값이 없으니(+해서 출력하겠다 라는 느낌)
+
+-ANSI SQL표준 (RIGHT OUTER JOIN)
+select employee.ename , manager.ename
+from emp employee RIGHT OUTER JOIN emp manager
+ON employee.mgr = manager.empno;
