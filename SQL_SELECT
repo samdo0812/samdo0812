@@ -79,6 +79,3 @@ FROM dept;
 SELECT ename||'님의 직업은'||job||'입니다.' 
 AS 문장
 FROM emp;
-
-
-
