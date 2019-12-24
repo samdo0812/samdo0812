@@ -51,7 +51,7 @@ SELECT employee.ename, manager.ename                  사장은 mgr이 null값�
 FROM emp employee, emp manager                        따라서 조인 시킬 값이 없는 측에 (+)
 WHERE employee.mgr = manager.empno(+);                empno에 null이라는 값(번호)이 없으므로 manager.empno절이 조건에 만족못한다. 그래서(+)
 
--ANSI SQL표준 (LEFT OUTER JOIN)                       왼쪽에 값이 더 있다. 라고 이해하자.
+-ANSI SQL표준 (LEFT OUTER JOIN)                       왼쪽에 값이 더 있다, 왼쪽의 값은 모두 출력하자. 라고 이해하자.
 SELECT employee.ename , manager.ename
 FROM emp employee LEFT OUTER JOIN emp manager
 ON employee.mgr = manager.empno;
