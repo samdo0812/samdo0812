@@ -1,54 +1,84 @@
 account: scott
 
-SQL_SELECT
+1.SQL_SELECT
+2.날짜 검색
+3.중복 값 제거하기
+4.문장 만들기
 
---1 이름이 SMITH인 사람의 월급여를 조회하시오.
+1.SQL_SELECT
+--1-1 이름이 SMITH인 사람의 월급여를 조회하시오.
 SELECT sal
 FROM emp
 WHERE ename = 'SMITH';
 
---2 월급이 2000이상인 사람의 이름과 직업을 구하시오.
+--1-2 월급이 2000이상인 사람의 이름과 직업을 구하시오.
 SELECT ename, job
 FROM emp
 WHERE sal>=2000;
 
---3 연봉이 많은 사람 기준으로 정렬하여 나타내시오.
+--1-3 연봉이 많은 사람 기준으로 정렬하여 나타내시오.
 SELECT ename, sal
 FROM emp
 ORDER BY sal desc;
 
---4 부서번호가 30번이고 급여가 2000이상인 사람만 조회하시오.
+--1-4 부서번호가 30번이고 급여가 2000이상인 사람만 조회하시오.
 SELECT ename, sal
 FROM emp
 WHERE deptno=30
 AND sal>=2000;
 
---5 부서번호가 10, 20번인 자료만 조회하시오.
+--1-5 부서번호가 10, 20번인 자료만 조회하시오.
 SELECT ename, deptno
 FROM emp
 WHERE deptno=10
 OR deptno=20;
 
---6 직업이 CLERK, SALESMAN인 사람의 이름, 직업, 연봉, 부서번호를 나타내시오.
+--1-6 직업이 CLERK, SALESMAN인 사람의 이름, 직업, 연봉, 부서번호를 나타내시오.
 SELECT ename, job, (sal*12), deptno
 FROM emp
 WHERE job = 'CLERK'
 OR job = 'SALESMAN';
 
---7 부서번호를 정렬하여 나타내시오. (단, 부서번호가 같을 경우는 월급여가 많은 순서대로 나타내시오.)
+--1-7 부서번호를 정렬하여 나타내시오. (단, 부서번호가 같을 경우는 월급여가 많은 순서대로 나타내시오.)
 SELECT *
 FROM emp
 ORDER BY deptno, sal desc;
 
---8 emp 테이블의 모든 자료를 조회하여 이름, 직업, 월급, 연봉을 나타내시오.
+--1-8 emp 테이블의 모든 자료를 조회하여 이름, 직업, 월급, 연봉을 나타내시오.
 SELECT ename, job, (sal*12)
 FROM emp;
 
---9 연봉의 0.33%는 세금이다. 이름, 직업, 연봉, 세금, 실수령액을 나타내시오.
+--1-9 연봉의 0.33%는 세금이다. 이름, 직업, 연봉, 세금, 실수령액을 나타내시오.
 SELECT ename, job, (sal*12) 연봉,(sal*12*0.33) 세금, (sal*12) - (sal*12*0.33) 실수령액
 FROM emp;
 
---10 직업이 MANAGER인 사람의 이름과 입사일을 표시하시오.
+--1-10 직업이 MANAGER인 사람의 이름과 입사일을 표시하시오.
 SELECT ename, hiredate
 FROM emp
 WHERE job = 'MANAGER';
+
+--1-11입사년도 81년인 사람을 모두 출력하시오.
+SELECT ename, hiredate
+FROM emp
+WHERE hiredate >= '81/01/01'
+AND hiredate <= '81/12/31'; 
+
+
+2.날짜 검색
+SELECT sysdate FROM dual;
+
+--2-1 emp데이터를 활용하여 각 데이터의 근무년수를 계산하시오
+SELECT ename 이름, hiredate 입사일, (sysdate-hiredate)/365 근무년수
+FROM emp;
+
+3.중복 값 제거하기
+SELECT DISTINCT dname,deptno
+FROM dept;
+
+4.문장 만들기
+SELECT ename||'님의 직업은'||job||'입니다.' 
+AS 문장
+FROM emp;
+
+
+
