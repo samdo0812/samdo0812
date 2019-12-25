@@ -1,3 +1,152 @@
+JOIN
+- 둘 이상의 테이블을 연결하여 데이터를 검색하는 방법
+- 보통 둘 이상의 행들의 공통된 값 Primary key 및 Foreign Key 값을 사용하여 조인한다.
+- 두개의 테이블을 SELECT문장 안에서 조인 하려면 적어도 하나의 컬럼이 그 두 테이블 사이에서 공유 되어야 한다.
+
+JOIN방법과 방식
+- 조인의 방법: Equi JOIN(등가 조인, 내부 조인), Non-Equi JOIN, Self JOIN, Outer JOIN
+- 조인의 방식: Nested Loop JOIN, Sort Merge JOIN, Hash JOIN
+
+1.Equi JOIN
+- 가장 일반적으로 사용하는 Equality Condition(=)에 의한 조인이다
+- Equi join의 성능을 높이기 위해서는 Index 기능을 사용하는 것이 좋다.
+-- dept 테이블과 emp 테이블을 조인하는 예제
+SELECT e.empno, e.ename, d.dname
+FROM dept d, emp e
+WHERE d.deptno = e.deptno;
+
+
+콤마(,) 대신 INNER JOIN을 사용 할 수 있으며, INNER는 생략 가능하다. Join 조건은 ON 절에 온다.
+-- INNER JOIN절을 이용하여 조인하는 예제
+SELECT e.empno, e.ename, d.dname
+FROM dept d 
+INNER JOIN emp e
+ON d.deptno = e.deptno;
+
+
+NATURAL JOIN을 사용 하면 동일한 컬럼을 내부적으로 모두조인 하므로, ON절이 생략 가능하다.
+-- NATURAL JOIN절을 이용하여 조인하는 예제
+SELECT  e.empno, e.ename, d.dname
+FROM  dept d 
+NATURAL JOIN emp e;
+
+
+NATURAL JOIN의 단점은 동일한 이름을 가지는 칼럼은 모두 조인이 되는데, USING 문을 사용하면 컬럼을 선택해서 조인을 할 수가 있다.
+-- JOIN~USING절을 이용하여 조인하는 예제
+SELECT e.empno, e.ename, deptno 
+FROM emp e 
+JOIN dept d 
+USING (deptno);
+
+
+2.Non-Equi JOIN
+- 테이블의 어떤 column도 Join할 테이블의 column에 일치하지 않을 때 사용하고, 조인조건은 동등( = )이외의 연산자를 갖는다.
+- BETWEEN AND, IS NULL, IS NOT NULL, IN, NOT IN
+- 거의 사용하지 않는다
+-- emp 테이블과 salgrade 테이블의 Non-Equi Join 예제
+SELECT e.ename,e.sal,s.grade
+  FROM emp e, salgrade s
+  WHERE e.sal 
+BETWEEN s.losal 
+    AND s.hisal;
+
+
+3.Self JOIN
+- Equi Join과 같으나 하나의 테이블에서 조인이 일어나는 것이 다르다.
+- 같은 테이블에 대해 두 개의 alias를 사용하여 FROM절에 두 개의 테이블을 사용하는 것 처럼 조인한다.
+-- 사원의 매니저명을 조회하는 Self Join 예제
+SELECT e.ename, a.ename "Manager"
+FROM emp e, emp a
+WHERE e.empno = a.mgr;
+
+Outer JOIN
+- Equi Join은 조인을 생성하려는 두 개의 테이블의 한쪽 컬럼에서 값이 없다면 테이터를 반환하지 못한다.
+- 동일 조건에서 조인 조건을 만족하는 값이 없는 행들을 조회하기 위해 Outer Join을 사용 한다.
+- Outer Join 연산자는 "(+)" 이다.
+- 조인시 값이 없는 조인측에 "(+)"를 위치 시킨다.
+- Outer Join 연산자는 표현식의 한 편에만 올 수 있다.
+
+
+Equi Join과 Outer Join의 비교.
+-- Equi Join 으로 부서 번호를 조회하는 예제
+SELECT DISTINCT(e.deptno), d.deptno, d.dname
+  FROM emp e, dept d
+ WHERE e.deptno = d.deptno;
+ 
+DEPTNO     DEPTNO
+------ ----------
+    10         10
+    20         20
+    30         30
+ 
+-- Outer Join 으로 부서 번호를 조회하는 예제
+SELECT DISTINCT(e.deptno), d.deptno
+  FROM emp e, dept d
+ WHERE e.deptno(+) = d.deptno;
+ 
+DEPTNO  DEPTNO
+ ------- --------
+     10       10
+     20       20
+     30       30
+              40
+
+
+Outer Join을 사용하는 테이블에 추가로 조건절이 있다면 (+)연산자를 모두 해야 한다.
+-- ename LIKE 조건절에 (+)연산자가 누락된 경우
+SELECT DISTINCT(a.deptno), b.deptno
+  FROM emp a, dept b
+ WHERE a.deptno(+) = b.deptno
+   AND a.ename LIKE '%';
+
+DEPTNO     DEPTNO
+---------- ----------
+        10         10
+        20         20
+        30         30
+
+-- ename LIKE 조건절에 (+)연산자를 추가해야 정상적으로 데이터가 조회 된다. 
+SELECT DISTINCT(a.deptno), b.deptno
+  FROM emp a, dept b
+ WHERE a.deptno(+) = b.deptno
+   AND a.ename(+) LIKE '%';
+ 
+DEPTNO  DEPTNO
+ ------- --------
+     10       10
+     20       20
+     30       30
+              40
+
+LEFT,RIGHT,FULL Outer JOIN
+Oracle9i 부터는 ANSI/ISO SQL 표준인 LEFT OUTER JOIN , RIGHT OUTER JOIN, FULL OUTER JOIN를 지원 한다.
+
+LEFT OUTERL JOIN은 오른쪽 테이블(아래 예제에서 emp테이블)에 조인시킬 컬럼의 값이 없는 경우 사용한다.
+
+SELECT DISTINCT(e.deptno), d.deptno
+  FROM dept d 
+  LEFT OUTER JOIN emp e
+  ON d.deptno = e.deptno;  
+
+RIGHT OUTERL JOIN은 왼쪽 테이블(아래 예제에서 emp테이블)에 조인시킬 컬럼의 값이 없는 경우 사용한다.
+
+SELECT DISTINCT(e.deptno), d.deptno
+  FROM emp e 
+ RIGHT OUTER JOIN dept d
+    ON e.deptno = d.deptno;
+
+FULL OUTERL JOIN은 양쪽 테이블 모두 Outer Join걸어야 하는 경우 사용 한다.
+
+SELECT DISTINCT(e.deptno), d.deptno
+  FROM emp e 
+  FULL OUTER JOIN dept d
+    ON e.deptno = d.deptno;
+    
+
+
+
+
+JOIN - 예제 -------------------------------------------------------------------------------------------------------------------------
 Account - scott
 
 2019/12/23
