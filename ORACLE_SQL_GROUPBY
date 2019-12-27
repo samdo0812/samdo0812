@@ -1,0 +1,97 @@
+GROUP BY절
+- GROUP BY 절은 데이터들을 원하는 그룹으로 나눌 수 있다.
+- 나누고자 하는 그룹의 컬럼명을 SELECT절과 GROUP BY절 뒤에 추가하면 된다.
+- 집계함수와 함께 사용되는 상수는 GROUP BY 절에 추가하지 않아도 된다. (개발자 분들이 많이 실수 함)
+- 아래는 집계 함수와 상수가 함께 SELECT 절에 사용되는 예이다.
+
+   -- 부서별 사원수 조회
+   SELECT '2005년' year, deptno 부서번호, COUNT(*) 사원수
+     FROM emp
+  GROUP BY deptno
+  ORDER BY COUNT(*) DESC;
+ 
+ 
+  YEAR     부서번호     사원수
+  ------ ---------- ----------
+  2005년         30          6
+  2005년         20          5
+  2005년         10          3
+
+아래 예제는 부서별로 그룹하여 부서번호, 인원수, 급여의 평균, 급여의 합을 조회하는 예제이다.
+
+    SELECT deptno, COUNT(*), ROUND(AVG(sal)) "급여평균", 
+          ROUND(SUM(sal)) "급여합계"
+      FROM emp
+    GROUP BY deptno;
+ 
+ 
+    DEPTNO   COUNT(*)    급여평균    급여합계
+  -------- ---------- ---------- ----------
+        30          6       1567       9400
+        20          5       2175      10875
+        10          3       2917       8750
+      
+아래 예제는 업무별로 그룹하여 업무, 인원수, 평균 급여액, 최고 급여액, 최저 급여액 및 합계를 조회하는 예제이다.
+
+    SELECT job, COUNT(empno) "인원수", AVG(sal) "평균급여액",
+           MAX(sal) "최고급여액", MIN(sal) "최저급여액", 
+          SUM(sal) "급여합계"
+      FROM emp
+    GROUP BY job;
+ 
+ 
+    JOB           인원수   평균급여액   최고급여액   최저급여액    급여합계
+    ----------- -------- ---------- ---------- ---------- ----------
+    CLERK              4     1037.5       1300        800       4150
+    SALESMAN           4       1400       1600       1250       5600
+    PRESIDENT          1       5000       5000       5000       5000
+    MANAGER            3 2758.33333       2975       2450       8275
+    ANALYST            2       3000       3000       3000       6000 
+
+- GROUP BY 절은 집계 함수 없이도 사용 될 수 있다.(DISTINCT와 용도가 비슷해 짐)
+- 아래 예제를 보면 GROUP BY는 말 그대로 그룹을 나누는 역할을 한다.
+
+    -- GROUP BY를 이용한 부서번호 조회 예
+    SELECT deptno
+      FROM emp
+    GROUP BY deptno;
+ 
+    DEPTNO
+    ------
+        30
+        20
+        10
+
+
+HAVING 절
+- WHERE 절에서는 집계함수를 사용 할 수 없다.
+- HAVING 절은 집계함수를 가지고 조건비교를 할 때 사용한다.
+- HAVING절은 GROUP BY절과 함께 사용이 된다.
+
+아래 예제는 사원수가 다섯 명이 넘는 부서와 사원수를 조회하는 예제이다.
+    SELECT b.dname, COUNT(a.empno) "사원수"
+      FROM emp a, dept b
+     WHERE a.deptno = b.deptno
+    GROUP BY dname
+    HAVING COUNT(a.empno) > 5;
+ 
+    DNAME          사원수
+    ------------ -------
+    SALES              6
+
+
+아래 예제는 전체 월급이 5000을 초과하는 JOB에 대해서 JOB과 월급여 합계를 조회하는 예이다. 
+단 판매원(SALES)은 제외하고 월 급여 합계로 내림차순 정렬하였다.
+
+    SELECT job, SUM(sal) "급여합계"
+      FROM emp  
+    WHERE job != 'SALES'      -- 판매원은 제외
+    GROUP BY job              -- 업무별로 Group By 
+    HAVING SUM(sal) > 5000     -- 전체 월급이 5000을 초과하는
+    ORDER BY SUM(sal) DESC;   -- 월급여 합계로 내림차순 정렬
+  
+    JOB                  급여합계
+    ------------------ ----------
+    MANAGER                  8275
+    ANALYST                  6000
+    SALESMAN                 5600
